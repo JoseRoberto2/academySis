@@ -36,6 +36,7 @@ class aluno(models.Model):
 	uf = models.CharField(max_length=2, choices=estados, default='Rio Grande do Norte')
 	telefone = models.CharField(max_length=13)
 	data_cadastro = models.DateTimeField(auto_now_add=True)
+	pass
 
 class professor(models.Model):
 	nome = models.CharField(max_length=100)
@@ -53,5 +54,16 @@ class turma(models.Model):
 	nome = models.CharField(max_length=20)
 	modalidade = models.CharField(max_length=13, choices=esporte)
 	data_cadastro = models.DateTimeField(auto_now_add=True)
-	valor = models.FloatField()
+	valor = models.DecimalField(max_digits=8, decimal_places=2)
 	dia_vencimento = models.CharField(max_length=2)
+
+class despesa(models.Model):
+	referencia = models.CharField(max_length=30)
+	valor = models.DecimalField(max_digits=8, decimal_places=2)
+	data_pagamento = models.DateField()
+	Pago = models.BooleanField()
+
+class anotacoes_aluno(models.Model):
+	data_cadastro = models.DateTimeField(auto_now_add=True)
+	anotacao = models.TextField()
+	aluno = models.ForeignKey(aluno, on_delete=models.CASCADE)
