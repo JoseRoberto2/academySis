@@ -56,14 +56,24 @@ class turma(models.Model):
 	data_cadastro = models.DateTimeField(auto_now_add=True)
 	valor = models.DecimalField(max_digits=8, decimal_places=2)
 	dia_vencimento = models.CharField(max_length=2)
+	professor = models.ForeignKey(professor, on_delete=models.CASCADE)
+	turma_alunos = models.ManyToManyField(aluno, through='turma_aluno')
 
 class despesa(models.Model):
 	referencia = models.CharField(max_length=30)
 	valor = models.DecimalField(max_digits=8, decimal_places=2)
 	data_pagamento = models.DateField()
 	Pago = models.BooleanField()
+	def statusDs(self):
+		return self.Pago
+	
 
 class anotacoes_aluno(models.Model):
 	data_cadastro = models.DateTimeField(auto_now_add=True)
 	anotacao = models.TextField()
 	aluno = models.ForeignKey(aluno, on_delete=models.CASCADE)
+
+class turma_aluno(models.Model):
+	alunos = models.ForeignKey(aluno, on_delete=models.CASCADE)
+	turma = models.ForeignKey(turma, on_delete=models.CASCADE)
+	data_matricula = models.DateField(auto_now_add=True)
