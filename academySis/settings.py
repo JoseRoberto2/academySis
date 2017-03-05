@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'gerenciador',
+    'django_cron',
 ]
 
 MIDDLEWARE = [
@@ -49,6 +50,10 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+]
+
+CRON_CLASSES = [
+    'gerenciador.MyCronJob',
 ]
 
 ROOT_URLCONF = 'academySis.urls'
@@ -107,7 +112,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'pt-br'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Brazil/East'
 
 USE_I18N = True
 
@@ -124,4 +129,5 @@ STATIC_URL = '/static/'
 
 SUIT_CONFIG = {
     'ADMIN_NAME': 'GERENCIADOR ACADEMIA',
+    'MENU_EXCLUDE': ('auth'),
 }
