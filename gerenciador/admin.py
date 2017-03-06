@@ -24,9 +24,14 @@ class turma_alunoAdmin(admin.ModelAdmin):
 	list_display = ('turma','alunos')
 	#search_fields = ('turma', 'alunos')
 
+class recibosAdmin(admin.ModelAdmin):
+	list_display = ('turma_aluno','forma_pagamento','valor','pago')
+	search_fields = ('')
+
 admin.site.register(aluno, alunoAdmin)
 admin.site.register(professor, professorAdmin)
 admin.site.register(turma, turmaAdmin)
 admin.site.register(despesa, despesaAdmin)
 admin.site.register(anotacoes_aluno, anotacoesAdmin)
 admin.site.register(turma_aluno, turma_alunoAdmin)
+admin.site.register(recibo,recibosAdmin)

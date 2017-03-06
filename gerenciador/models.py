@@ -4,7 +4,7 @@
 from __future__ import unicode_literals
 
 from django.db import models
-from django_cron import CronJobBase, Schedule
+#from django_cron import CronJobBase, Schedule
 
 
 # Create your models here.
@@ -24,6 +24,11 @@ esporte=(
 	('zumba','Zumba'),
 	('outra','Outra')
 	)
+pagamentos=(
+	('dinheiro', 'Dinheiro(R$)'),
+	('Cartão', 'Cartão'),
+	('Tranferencia', 'Tranferência'),
+)
 
 class aluno(models.Model):
 	nome = models.CharField(max_length=100)
@@ -66,6 +71,9 @@ class turma(models.Model):
 	def __unicode__(self):
 		return '%s - %s' % (self.nome,self.modalidade)
 
+	def rtValor(self):
+		return self.valor
+
 class despesa(models.Model):
 	referencia = models.CharField(max_length=30)
 	valor = models.DecimalField(max_digits=8, decimal_places=2)
@@ -84,16 +92,17 @@ class turma_aluno(models.Model):
 	alunos = models.ForeignKey(aluno, on_delete=models.CASCADE)
 	turma = models.ForeignKey(turma, on_delete=models.CASCADE)
 	data_matricula = models.DateField(auto_now_add=True)
+	def __unicode__(self):
+		return ('%s %s' % (unicode(self.turma), unicode(self.alunos)))
+		#return unicode(self.turma.nome)
 
-class MyCronJob(CronJobBase):
-	RUN_EVERY_MINS = 2
-	#schedule = Schedule(run_every_mins=RUN_EVERY_MINS)
-	RUN_AT_TIMES = ['15:02']
-	schedule = Schedule(run_every_mins=RUN_EVERY_MINS, run_at_times=RUN_AT_TIMES)
-	code = 'gerenciador.my_cron_job'  # a unique code
-	def do(self):
-		print 'funconado cron'
-		b=despesa(referencia='teste',valor='10',data_pagamento='2017-04-01',Pago=False)
-		b.save()
-		pass
-	# do your thing here
+
+class recibo(models.Model):
+	turma_aluno=models.ForeignKey(turma_aluno, on_delete=models.CASCADE)
+	forma_pagamento=models.CharField(max_length=20, choices=pagamentos, blank=True)
+	observacao=models.TextField(blank=True)
+	pago = models.BooleanField()
+	#def __unicode__(self):
+		#return self.turma_aluno.turma.valor
+	def valor(self):
+		return self.turma_aluno.turma.valor
