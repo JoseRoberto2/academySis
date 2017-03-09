@@ -10,7 +10,7 @@ class Command(BaseCommand):
         #d.save()
         al=turma_aluno.objects.all()
         for a in al:
-            print a.pk
+            #print a.pk
             r = recibo(turma_aluno=a, pago=False)
             r.save()
 

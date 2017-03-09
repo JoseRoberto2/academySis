@@ -4,7 +4,7 @@ from django.contrib import admin
 from gerenciador.models import *
 
 class alunoAdmin(admin.ModelAdmin):
-	list_display = ('nome','data_cadastro')
+	list_display = ('nome','data_cadastro','imagem_img')
 	search_fields = ('nome','cpf')
 
 class anotacoesAdmin(admin.ModelAdmin):
@@ -21,12 +21,13 @@ class turmaAdmin(admin.ModelAdmin):
 	list_display = ('nome', 'modalidade','valor','professor')
 
 class turma_alunoAdmin(admin.ModelAdmin):
-	list_display = ('turma','alunos')
+	list_display = ('turma','alunos','dia_vencimento','data_matricula')
+
 	#search_fields = ('turma', 'alunos')
 
 class recibosAdmin(admin.ModelAdmin):
-	list_display = ('turma_aluno','forma_pagamento','valor','pago')
-	search_fields = ('')
+	list_display = ('turma_aluno','forma_pagamento','valor','juros','total','vencimento','mes','pago')
+	#search_fields = ('')
 
 admin.site.register(aluno, alunoAdmin)
 admin.site.register(professor, professorAdmin)

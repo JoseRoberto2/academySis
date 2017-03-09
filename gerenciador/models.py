@@ -29,6 +29,20 @@ pagamentos=(
 	('Cartão', 'Cartão'),
 	('Tranferencia', 'Tranferência'),
 )
+meses= {
+	('1', 'JANEIRO'),
+	('2', 'FEVEREIRO'),
+	('3', 'MARÇO'),
+	('4', 'ABRIL'),
+	('5', 'MAIO'),
+	('6', 'JUNHO'),
+	('7', 'JULHO'),
+	('8', 'AGOSTO'),
+	('9', 'SETEMBRRO'),
+	('10', 'OUTUBRO'),
+	('11', 'NOVEMBRO'),
+	('12', 'DEZEMBRO'),
+}
 
 class aluno(models.Model):
 	nome = models.CharField(max_length=100)
@@ -42,9 +56,19 @@ class aluno(models.Model):
 	uf = models.CharField(max_length=2, choices=estados, default='Rio Grande do Norte')
 	telefone = models.CharField(max_length=13)
 	data_cadastro = models.DateTimeField(auto_now_add=True)
+	foto_perfil = models.ImageField(blank=True)
 	pass
+
 	def __unicode__(self):
 		return self.nome
+
+	def imagem_img(self):
+		if self.foto_perfil:
+			return u'<img src="%s" width=50 />' % self.foto_perfil.url
+		else:
+			return u'Sem imagem'
+	imagem_img.short_description = "Imagem Perfil"
+	imagem_img.allow_tags = True
 
 class professor(models.Model):
 	nome = models.CharField(max_length=100)
@@ -65,7 +89,7 @@ class turma(models.Model):
 	modalidade = models.CharField(max_length=13, choices=esporte)
 	data_cadastro = models.DateTimeField(auto_now_add=True)
 	valor = models.DecimalField(max_digits=8, decimal_places=2)
-	dia_vencimento = models.CharField(max_length=2)
+	#dia_vencimento = models.CharField(max_length=2)
 	professor = models.ForeignKey(professor, on_delete=models.CASCADE)
 	turma_alunos = models.ManyToManyField(aluno, through='turma_aluno')
 	def __unicode__(self):
@@ -92,6 +116,7 @@ class turma_aluno(models.Model):
 	alunos = models.ForeignKey(aluno, on_delete=models.CASCADE)
 	turma = models.ForeignKey(turma, on_delete=models.CASCADE)
 	data_matricula = models.DateField(auto_now_add=True)
+	dia_vencimento = models.CharField(max_length=2, default='02')
 	def __unicode__(self):
 		return ('%s %s' % (unicode(self.turma), unicode(self.alunos)))
 		#return unicode(self.turma.nome)
@@ -102,7 +127,16 @@ class recibo(models.Model):
 	forma_pagamento=models.CharField(max_length=20, choices=pagamentos, blank=True)
 	observacao=models.TextField(blank=True)
 	pago = models.BooleanField()
+	mes = models.CharField(max_length=2,choices=meses)
+	juros = models.DecimalField(max_digits=8, decimal_places=2, default=0, blank=True,editable=False)
 	#def __unicode__(self):
 		#return self.turma_aluno.turma.valor
+
 	def valor(self):
 		return self.turma_aluno.turma.valor
+
+	def vencimento(self):
+		return self.turma_aluno.dia_vencimento
+
+	def total(self):
+		return self.valor()+self.juros

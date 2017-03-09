@@ -15,9 +15,13 @@ Including another URLconf
 """
 from django.conf.urls import url
 from django.contrib import admin
-from gerenciador.views import current_datetime
+from .settings import DEBUG
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
-    url(r'^current_datetime/$', current_datetime, name = 'current_datetime'),
 ]
+if DEBUG:
+    from django.conf.urls.static import static
+    from .settings import MEDIA_ROOT,MEDIA_URL
+
+    urlpatterns += static(MEDIA_URL,document_root=MEDIA_ROOT)
